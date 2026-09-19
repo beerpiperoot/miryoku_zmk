@@ -156,6 +156,11 @@ jobs:
           fi
 
           run_name=`echo $run_name | tr ' ' '-'`
+          # Sanitise for use as an artifact name: upload-artifact@v4 forbids the
+          # characters " : < > | * ? \ / and carriage returns / newlines. Board
+          # descriptors such as "nice_nano//zmk" contain slashes, so replace any
+          # forbidden character with '_' and collapse runs of '_' into one.
+          run_name=`echo "$run_name" | tr -d '\r\n' | tr '":<>|*?\\\\/' '_' | tr -s '_'`
           echo "run_name=$run_name" >> $GITHUB_OUTPUT
 
           echo "::endgroup::"
